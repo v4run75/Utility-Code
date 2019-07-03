@@ -1,0 +1,14 @@
+{ 
+	 
+ "data": {
+        "body" : "Call Client", 
+        "title" : "Reminder !",
+		"clientType" : "Leads",
+		"clientName" : "Varun Singh",
+		"click_action":"NOTIFICATION",
+		"phoneNo":"7838342613",
+		"companyName":"Webpulse"
+	
+ 	
+ },
+ "to" : "eDXq0Vc3VEM:APA91bEsBAlsp7qQ1N3Ayp5_DYtltGmYcbjbFN8mKSJ90a-dS4shUfJxZxootla9m3mAbuQT-ShDfs3Fjsq0LIjSJw7Hg7fr0FdyXQxHpDVWfBFsTfIo7RA7ZxPr_mg8mJRVGHz-YUFY" }
