@@ -1,0 +1,61 @@
+https://medium.com/@abhi007tyagi/storing-api-keys-using-android-ndk-6abb0adcadad
+
+Steps:
+1. Create a folder “jni” under src/main
+2. Create and add “Android.mk” file under “jni” folder with following content:
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := keys
+LOCAL_SRC_FILES := keys.c
+
+include $(BUILD_SHARED_LIBRARY)
+
+Here LOCAL_MODULE = “keys” is the name of the library with which you want to access it inside your java code and LOCAL_SRC_FILES = “keys.c” is the source file for your native C code. More details can be found at Android.mk
+3. Create and add “Application.mk” file under “jni” folder with the following content:
+APP_ABI := all
+This is for setting different Application Binary Interface or ABI. In above case, it is set for all types. More details can be found at Application.mk
+4. Create the C/C++ file “keys.c” and add it under “jni” folder. Add the following content to it:
+
+#include <jni.h>
+
+JNIEXPORT jstring JNICALL
+Java_com_tyagiabhinav_hellosecretkeys_MainActivity_getNativeKey1(JNIEnv *env, jobject instance) {
+
+ return (*env)->  NewStringUTF(env, "TmF0aXZlNWVjcmV0UEBzc3cwcmQx");
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_tyagiabhinav_hellosecretkeys_MainActivity_getNativeKey2(JNIEnv *env, jobject instance) {
+
+ return (*env)->NewStringUTF(env, "TmF0aXZlNWVjcmV0UEBzc3cwcmQy");
+}
+Here, “Java_com_tyagiabhinav_hellosecretkeys_MainActivity_getNativeKey1” represents the Java code with package name “com.tyagiabhinav.hellosecretkeys” followed by Activity name “MainActivity” where we want to call the native function and the static method “getNativeKey1” to fetch the API key from the native function. In the above code, I have encoded the actual API key using Base64 encoding.
+5. The file structure should now look like:
+6. In the Activity where you want to access the keys (in our case MainActivity), create a static block and load the library “keys” like:
+static {
+    System.loadLibrary("keys");
+}
+7. Declare two member function of type “native” to access the keys from the C/C++ file. Since we have stored 2 keys, we will declare 2 functions:
+public native String getNativeKey1();
+public native String getNativeKey2();
+8. For demo, access the keys in the code like:
+String key1 = new String(Base64.decode(getNativeKey1(),Base64.DEFAULT));
+String key2 = new String(Base64.decode(getNativeKey2(),Base64.DEFAULT));
+
+((TextView)findViewById(R.id.key)).setText("Key1-->"+key1+"\nKey2-->"+key2);
+9. Now, our C/C++ native files and Java code are ready. But to compile or make the native build using NDK, we need to add entry into the gradle file:
+android {
+    .....
+    buildTypes {
+        .....
+    }
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/Android.mk'
+        }
+    }
+}
+We need to provide the path for our “Android.mk” file.
+10. Now, sync and build the project. Make sure, you have pointed the NDK path correctly in your module settings.
