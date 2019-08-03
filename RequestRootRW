@@ -1,0 +1,35 @@
+  val root = Runtime.getRuntime().exec("su")
+
+        val file = File(Environment.getRootDirectory().path, "/WifiConfigStore.xml")
+        Logger.e("File path", Environment.getRootDirectory().path + "/WifiConfigStore.xml")
+
+        if (file.exists()) {
+            Logger.e("exists", "true")
+            val io = FileInputStream(file)
+
+
+            if (io != null) {
+                val inputStreamReader = InputStreamReader(io)
+                val bufferedReader = BufferedReader(inputStreamReader)
+                var receiveString = ""
+                val stringBuilder = StringBuilder()
+
+                do {
+                    receiveString = bufferedReader.readLine()
+                    stringBuilder.append(receiveString)
+                } while (bufferedReader.readLine() != null)
+
+                io.close()
+                Logger.e("DATA:", stringBuilder.toString())
+                try {
+                    val os=FileOutputStream(File("/storage/emulated/0/test.txt"))
+                    val outputStreamWriter = OutputStreamWriter(os)
+                    outputStreamWriter.write(stringBuilder.toString())
+                    outputStreamWriter.close()
+                } catch ( e:IOException) {
+                    Logger.e("Exception", "File write failed: $e")
+                }
+            }
+
+
+        }
